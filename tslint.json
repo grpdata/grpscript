@@ -1,0 +1,96 @@
+{
+  "extends": "tslint:latest",
+  "rules": {
+    "class-name": true,
+    "curly": true,
+    "eofline": true,
+    "forin": true,
+    "indent": [
+      "spaces"
+    ],
+    "interface-name": [
+      true
+    ],
+    "jsdoc-format": true,
+    "max-line-length": [
+      true, 120
+    ],
+    "member-access": true,
+    "no-any": true,
+    "no-arg": true,
+    "no-bitwise": true,
+    "no-conditional-assignment": true,
+    "no-consecutive-blank-lines": [true],
+    "no-console": [
+      true, "log", "dir"
+    ],
+    "no-construct": true,
+    "no-constructor-vars": true,
+    "no-debugger": true,
+    "no-duplicate-key": true,
+    "no-duplicate-variable": true,
+    "no-empty": true,
+    "no-eval": true,
+    "no-internal-module": true,
+    "no-namespace": true,
+    "no-reference": true,
+    "no-require-imports": true,
+    "no-shadowed-variable": true,
+    "no-string-literal": false,
+    "no-switch-case-fall-through": true,
+    "no-trailing-whitespace": true,
+    "no-unreachable": true,
+    "no-unused-expression": true,
+    "no-unused-new": true,
+    "no-use-before-declare": true,
+    "no-var-keyword": true,
+    "no-var-requires": true,
+    "object-literal-sort-keys": false,
+    "one-line": [false],
+    "only-arrow-functions": [false],
+    "ordered-imports": [false],
+    "quotemark": [
+      true,
+      "single"
+    ],
+    "radix": false,
+    "semicolon": [
+      "always"
+    ],
+    "switch-default": true,
+    "trailing-comma": [
+      true,
+      {
+        "multiline": "never",
+        "singleline": "never"
+      }
+    ],
+    "triple-equals": true,
+    "typedef": [
+      true,
+      "call-signature",
+      "parameter",
+      "property-declaration",
+      "member-variable-declaration"
+    ],
+    "typedef-whitespace": [
+      true
+    ],
+    "variable-name": [
+      true,
+      "allow-leading-underscore"
+    ],
+    "whitespace": [
+      true,
+      "check-branch",
+      "check-decl",
+      "check-module",
+      "check-operator",
+      "check-type",
+      "check-typecast"
+    ],
+    "no-unused-variable": true,
+    "no-magic-numbers": [false, -1, 0, 1],
+    "object-literal-key-quotes": [false]
+  }
+}

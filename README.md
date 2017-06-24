@@ -1,1 +1,1 @@
-# grpscript
+[sample](https://grpdata.github.io/grpscript/)

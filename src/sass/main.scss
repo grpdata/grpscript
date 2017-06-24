@@ -1,0 +1,255 @@
+* {
+  margin: 0;
+  padding: 0;
+  font-size: 100%;
+}
+
+body {
+  display: inline-block;
+  min-width: 100%;
+  font-family: "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, sans-serif;
+}
+
+#not-compatible {
+  margin: 10px;
+}
+
+#message {
+  display: none;
+  margin: 10px;
+}
+
+#contents {
+  display: none;
+}
+
+#contents.fadein {
+  transition: opacity 0.6s;
+  opacity: 1;
+}
+
+@media (min-width:1px) {
+  #not-compatible {
+    display: none;
+  }
+  #contents {
+    display: block;
+    opacity: 0;
+  }
+}
+
+.easy {
+  $easy-color: #55b2ff;
+  background: $easy-color;
+  header {
+    h1 #difficulty {
+      color: $easy-color;
+    }
+    .items .name {
+      color: $easy-color;
+    }
+  }
+  main {
+    .measure-row th {
+      background: $easy-color;
+    }
+  }
+}
+
+.normal {
+  $normal-color: #71e359;
+  background: $normal-color;
+  header {
+    h1 #difficulty {
+      color: $normal-color;
+    }
+    .items .name {
+      color: $normal-color;
+    }
+  }
+  main {
+    .measure-row th {
+      background: $normal-color;
+    }
+  }
+}
+
+.hard {
+  $hard-color: #fc3;
+  background: $hard-color;
+  header {
+    h1 #difficulty {
+      color: $hard-color;
+    }
+    .items .name {
+      color: $hard-color;
+    }
+  }
+  main {
+    .measure-row th {
+      background: $hard-color;
+    }
+  }
+}
+
+.expert {
+  $expert-color: #ff4848;
+  background: $expert-color;
+  header {
+    h1 #difficulty {
+      color: $expert-color;
+    }
+    .items .name {
+      color: $expert-color;
+    }
+  }
+  main {
+    .measure-row th {
+      background: $expert-color;
+    }
+  }
+}
+
+header {
+  display: block;
+  color: #fff;
+  padding: 5px;
+  border-bottom: 5px solid #fff;
+  h1 {
+    font-size: 20px;
+    padding: 10px;
+    #difficulty {
+      font-size: 20px;
+      font-weight: bold;
+      background: #fff;
+      color: #fff;
+      padding: 0 5px;
+      border-radius: 4px;
+    }
+  }
+  .items {
+    font-size: 16px;
+    .name {
+      background: #fff;
+      font-weight: bold;
+      border-radius: 10px;
+      padding: 0 4px;
+    }
+    .value {
+      margin: 0 10px;
+    }
+  }
+}
+
+main {
+  display: inline-block;
+  padding: 3px;
+  background: #fff;
+  margin: 5px;
+  .measure-row {
+    border-collapse: collapse;
+    th {
+      font-size: 10px;
+      background: #fff;
+      color: #fff;
+      border: 1px solid #333;
+      font-family: "Arial";
+      .header-area {
+        width: 20px;
+      }
+    }
+    td {
+      position: relative;
+      border: 1px solid #333;
+      .background-area {
+        position: absolute;
+        overflow: hidden;
+        .lane-split-line {
+          position: absolute;
+          width: 1px;
+          height: 100%;
+          background: #999;
+          z-index: 22;
+        }
+        .beat-line {
+          position: absolute;
+          height: 1px;
+          width: 100%;
+          background: #999;
+          z-index: 21;
+        }
+        .beat-sub-line {
+          position: absolute;
+          height: 1px;
+          width: 100%;
+          background: #ccc;
+          z-index: 20;
+        }
+        .fever-ready-area {
+          position: absolute;
+          background: #ddd;
+          width: 100%;
+          z-index: 10;
+        }
+        .fever-area {
+          position: absolute;
+          background: #c3f9ff;
+          width: 100%;
+          z-index: 10;
+        }
+      }
+      .note-area {
+        position: relative;
+        .note {
+          position: absolute;
+          box-sizing: border-box;
+        }
+        .normal {
+          background: #8cf;
+          border-radius: 50px;
+          border: 1px solid #5588d4;
+        }
+        .skill {
+          background: #ff6;
+          border-radius: 50px;
+          border: 1px solid #aa5;
+        }
+        .hold {
+          background: #7f8;
+          border-radius: 50px;
+          border: 1px solid #5fb949;
+        }
+        .slide {
+          background: #7f8;
+          border: 1px solid #5fb949;
+          height: 3px;
+        }
+        .hold-line {
+          position: absolute;
+          background: #afa;
+          border: 1px solid #5fb949;
+          border-width: 0 1px;
+          box-sizing: border-box;
+          z-index: 50;
+        }
+        .flick {
+          background: #ff8598;
+          border: 1px solid #e44;
+          transform: rotate(45deg) scale(0.80);
+        }
+        .slide-line-area {
+          box-sizing: border-box;
+          position: absolute;
+          overflow: hidden;
+          .slide-line {
+            position: absolute;
+            background: #afa;
+            border: 1px solid #5fb949;
+            box-sizing: border-box;
+            z-index: 50;
+          }
+        }
+      }
+    }
+  }
+}
