@@ -87,7 +87,7 @@ export class GrpScriptUtil {
               }
             }
 
-            if (noteType === NoteType.SKILL) {
+            if (noteType === NoteType.SKILL || noteType === NoteType.SKILL_HOLD) {
               skillTime.push(time);
             }
 
