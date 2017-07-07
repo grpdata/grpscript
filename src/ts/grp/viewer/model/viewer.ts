@@ -8,7 +8,7 @@ export class Viewer {
   public combo: string;
   public time: string;
   public scorePotential: string;
-  public scoreElement: HTMLElement;
+  public scoreElement: HTMLElement | null;
 
   constructor() {
     this.title = 'No Title';

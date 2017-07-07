@@ -134,8 +134,8 @@ export class ViewerUtil {
       colTd.appendChild(measureTable);
 
       let colDrawBeat = 0;
-      let measureBeat: number;
-      let measure: Measure;
+      let measureBeat = 4;
+      let measure = grpScript.measure[measureIndex];
       let firstRowMeasureFlag = true;
 
       do {
@@ -296,7 +296,6 @@ export class ViewerUtil {
       noteAreaDiv.appendChild(noteDiv);
 
       if ((note.type === NoteType.HOLD || note.type === NoteType.SKILL_HOLD) && note.next >= 0) {
-        const endNote = grpScript.notes[note.next];
         const holdLineDiv = this.createHoldLine(grpScript, measure, note, true, false);
         noteAreaDiv.appendChild(holdLineDiv);
       } else if (note.type === NoteType.SLIDE_A ||

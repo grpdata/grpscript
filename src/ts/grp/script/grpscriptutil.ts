@@ -216,7 +216,7 @@ export class GrpScriptUtil {
     return grpScript;
   }
 
-  public static load(url: string, callback: (err: Error, grpScript: GrpScript) => void): void {
+  public static load(url: string, callback: (err: Error | null, grpScript: GrpScript | null) => void): void {
     try {
       const xhr = new XMLHttpRequest();
       xhr.open('get', url, true);
@@ -275,6 +275,7 @@ export class GrpScriptUtil {
     let value: string;
     if (splitIndex === -1) {
       order = line.trim();
+      value = '';
     } else {
       order = line.substr(0, splitIndex);
       value = line.substr(splitIndex + 1);
@@ -291,7 +292,10 @@ export class GrpScriptUtil {
         grpScript.level = parseInt(value);
         break;
       case '#DIFFICULTY':
-        grpScript.difficulty = Difficulty[value];
+        const upperValue = value.toUpperCase();
+        if (upperValue === 'EXPERT' || upperValue === 'HARD' || upperValue === 'NORMAL' || upperValue === 'EASY') {
+          grpScript.difficulty = Difficulty[upperValue];
+        }
         break;
       case '#BPM':
         const bpm = new Bpm(measureCount, beat, parseFloat(value));

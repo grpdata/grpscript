@@ -12,7 +12,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
       try {
 
-        if (err) {
+        if (err || !grpScript) {
           throw err;
         }
 
@@ -32,9 +32,10 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   function getLoadParam(): string {
-    try {
-      return location.search.match(/load=([^&]*)(&|$)/)[1];
-    } catch (e) {
+    const loadParamMatchArray = location.search.match(/load=([^&]*)(&|$)/);
+    if (loadParamMatchArray) {
+      return loadParamMatchArray[1];
+    } else {
       throw new Error('パラメータエラー');
     }
   }

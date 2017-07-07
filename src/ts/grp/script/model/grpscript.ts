@@ -29,9 +29,9 @@ export class GrpScript {
     this.notes = [];
     this.time = 0;
     this.fever = {
-      ready: null,
-      start: null,
-      end: null
+      ready: new Fever(0, 0, 0),
+      start: new Fever(0, 0, 0),
+      end: new Fever(0, 0, 0)
     };
   }
 }
