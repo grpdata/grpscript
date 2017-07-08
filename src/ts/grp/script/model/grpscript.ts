@@ -14,9 +14,9 @@ export class GrpScript {
   public notes: Note[];
   public time: number;
   public fever: {
-    ready: Fever,
-    start: Fever,
-    end: Fever
+    ready: Fever | null,
+    start: Fever | null,
+    end: Fever | null
   };
 
   constructor() {
@@ -29,9 +29,9 @@ export class GrpScript {
     this.notes = [];
     this.time = 0;
     this.fever = {
-      ready: new Fever(0, 0, 0),
-      start: new Fever(0, 0, 0),
-      end: new Fever(0, 0, 0)
+      ready: null,
+      start: null,
+      end: null
     };
   }
 }

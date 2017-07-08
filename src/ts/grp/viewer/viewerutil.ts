@@ -325,6 +325,10 @@ export class ViewerUtil {
       const fever = targetFever[i];
       const endFever = targetFever[i + 1];
 
+      if (fever === null || endFever === null) {
+        continue;
+      }
+
       if (fever.measureCount > measure.value) {
         continue;
       }

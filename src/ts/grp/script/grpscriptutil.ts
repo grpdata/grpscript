@@ -196,9 +196,13 @@ export class GrpScriptUtil {
       }
     }
 
-    grpScript.notes
-      .filter((note) => (note.time >= grpScript.fever.start.time && note.time < grpScript.fever.end.time))
-      .forEach((note) => note.feverRange = true);
+    if (grpScript.fever.start !== null && grpScript.fever.end !== null) {
+      const feverStart = grpScript.fever.start;
+      const feverEnd = grpScript.fever.end;
+      grpScript.notes
+        .filter((note) => (note.time >= feverStart.time && note.time < feverEnd.time))
+        .forEach((note) => note.feverRange = true);
+    }
 
     grpScript.notes
       .filter((note) => {
