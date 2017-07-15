@@ -71,6 +71,21 @@ window.addEventListener('DOMContentLoaded', () => {
       });
       reader.readAsText(file);
     });
+
+    const menuBtnElement = document.getElementById('menu-btn')!;
+    const menuBgElement = document.getElementById('menu-bg')!;
+    const menuPanelElement = document.getElementById('menu-panel')!;
+    menuBtnElement.addEventListener('click', () => {
+      if (menuBtnElement.className !== 'on') {
+        menuBtnElement.className = 'on';
+        menuBgElement.className = 'on';
+        menuPanelElement.className = 'on';
+      } else {
+        menuBtnElement.className = 'off';
+        menuBgElement.className = 'off';
+        menuPanelElement.className = 'off';
+      }
+    });
   }
 
   function outputError(errorMessage: string): void {

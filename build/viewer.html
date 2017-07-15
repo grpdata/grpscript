@@ -27,7 +27,71 @@
         <span class="name">演奏時間</span><span class="value" id="time"></span>
         <span class="name">スコアポテンシャル</span><span class="value" id="score-potential"></span>
       </div>
+      <div id="menu-btn">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
     </header>
+    <div id="menu-bg"></div>
+    <div id="menu">
+      <div id="menu-panel">
+        <h2>オプション</h2>
+        <div class="item">
+          <div class="name">一列の拍数</div>
+          <div class="input-area">
+            <div id="col-beat-count-dec" class="count-btn">－</div>
+            <input id="col-beat-count-value" type="text" class="show-value" value="0" readonly />
+            <div id="col-beat-count-inc" class="count-btn">＋</div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="name">一拍の高さ</div>
+          <div class="input-area">
+            <div id="beat-height-dec" class="count-btn">－</div>
+            <input id="beat-height-value" type="text" class="show-value" value="0" readonly />
+            <div id="beat-height-inc" class="count-btn">＋</div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="name">レーンの幅</div>
+          <div class="input-area">
+            <div id="lane-width-dec" class="count-btn">－</div>
+            <input id="lane-width-value" type="text" class="show-value" value="0" readonly />
+            <div id="lane-width-inc" class="count-btn">＋</div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="name">リズムアイコンの大きさ</div>
+          <div class="input-area">
+            <div id="note-size-dec" class="count-btn">－</div>
+            <input id="note-size-value" type="text" class="show-value" value="0" readonly />
+            <div id="note-size-inc" class="count-btn">＋</div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="name">同時押しライン</div>
+          <div class="input-area">
+            <input id="same-line-on" type="radio" name="same-line" />
+            <label for="same-line-on">ON</label>
+            <input id="same-line-off" type="radio" name="same-line" />
+            <label for="same-line-off">OFF</label>
+          </div>
+        </div>
+        <div class="item">
+          <div class="name">リズムの色覚サポート</div>
+          <div class="input-area">
+            <input id="color-support-on" type="radio" name="color-support" />
+            <label for="color-support-on">ON</label>
+            <input id="color-support-off" type="radio" name="color-support" />
+            <label for="color-support-off">OFF</label>
+          </div>
+        </div>
+        <div class="text-center">
+          <div id="option-close-btn" class="close-btn">閉じる</div>
+        </div>
+      </div>
+    </div>
     <main id="score-html"></main>
   </div>
 </body>
