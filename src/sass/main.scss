@@ -223,6 +223,7 @@ header {
   -ms-user-select: none;
   -moz-user-select: none;
   user-select: none;
+  z-index: 9998;
   #menu-panel.on {
     transform: translateX(0);
   }

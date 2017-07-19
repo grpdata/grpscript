@@ -40,9 +40,9 @@
         <div class="item">
           <div class="name">一列の拍数</div>
           <div class="input-area">
-            <div id="col-beat-count-dec" class="count-btn">－</div>
-            <input id="col-beat-count-value" type="text" class="show-value" value="0" readonly />
-            <div id="col-beat-count-inc" class="count-btn">＋</div>
+            <div id="col-beat-dec" class="count-btn">－</div>
+            <input id="col-beat-value" type="text" class="show-value" value="0" readonly />
+            <div id="col-beat-inc" class="count-btn">＋</div>
           </div>
         </div>
         <div class="item">
@@ -69,22 +69,24 @@
             <div id="note-size-inc" class="count-btn">＋</div>
           </div>
         </div>
-        <div class="item">
-          <div class="name">同時押しライン</div>
-          <div class="input-area">
-            <input id="same-line-on" type="radio" name="same-line" />
-            <label for="same-line-on">ON</label>
-            <input id="same-line-off" type="radio" name="same-line" />
-            <label for="same-line-off">OFF</label>
+        <div style="display:none">
+          <div class="item">
+            <div class="name">同時押しライン</div>
+            <div class="input-area">
+              <input id="same-line-on" type="radio" name="same-line" />
+              <label for="same-line-on">ON</label>
+              <input id="same-line-off" type="radio" name="same-line" />
+              <label for="same-line-off">OFF</label>
+            </div>
           </div>
-        </div>
-        <div class="item">
-          <div class="name">リズムの色覚サポート</div>
-          <div class="input-area">
-            <input id="color-support-on" type="radio" name="color-support" />
-            <label for="color-support-on">ON</label>
-            <input id="color-support-off" type="radio" name="color-support" />
-            <label for="color-support-off">OFF</label>
+          <div class="item">
+            <div class="name">リズムの色覚サポート</div>
+            <div class="input-area">
+              <input id="color-support-on" type="radio" name="color-support" />
+              <label for="color-support-on">ON</label>
+              <input id="color-support-off" type="radio" name="color-support" />
+              <label for="color-support-off">OFF</label>
+            </div>
           </div>
         </div>
         <div class="text-center">

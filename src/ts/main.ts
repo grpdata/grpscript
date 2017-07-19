@@ -6,30 +6,66 @@ window.addEventListener('DOMContentLoaded', () => {
   try {
     const grpsPath = getLoadParam();
 
-    registEvent();
-
     GrpScriptUtil.load(grpsPath, (err, grpScript) => {
-
       try {
-
         if (err || !grpScript) {
           throw err;
         }
-
-        const viewer = ViewerUtil.create(grpScript);
-
-        ViewerUtil.update(viewer);
-
+        ViewerUtil.init(grpScript);
       } catch (e) {
         console.error(e);
-        outputError(e.message);
+        ViewerUtil.outputError(e.message);
       }
     });
-
   } catch (e) {
     console.error(e);
-    outputError(e.message);
+    ViewerUtil.outputError(e.message);
   }
+
+  window.addEventListener('dragover', (e) => {
+    e.preventDefault();
+  });
+
+  window.addEventListener('drop', (e) => {
+    e.preventDefault();
+    ViewerUtil.load(e.dataTransfer.files[0]);
+  });
+
+  document.getElementById('menu-btn')!.addEventListener('click', ViewerUtil.menuSwitch);
+
+  document.getElementById('option-close-btn')!.addEventListener('click', ViewerUtil.menuSwitch);
+
+  document.getElementById('col-beat-inc')!.addEventListener('click', () => {
+    ViewerUtil.optionColBeatInc();
+  });
+
+  document.getElementById('col-beat-dec')!.addEventListener('click', () => {
+    ViewerUtil.optionColBeatDec();
+  });
+
+  document.getElementById('beat-height-inc')!.addEventListener('click', () => {
+    ViewerUtil.optionBeatHeightInc();
+  });
+
+  document.getElementById('beat-height-dec')!.addEventListener('click', () => {
+    ViewerUtil.optionBeatHeightDec();
+  });
+
+  document.getElementById('lane-width-inc')!.addEventListener('click', () => {
+    ViewerUtil.optionLaneWidthInc();
+  });
+
+  document.getElementById('lane-width-dec')!.addEventListener('click', () => {
+    ViewerUtil.optionLaneWidthDec();
+  });
+
+  document.getElementById('note-size-inc')!.addEventListener('click', () => {
+    ViewerUtil.optionNoteSizeInc();
+  });
+
+  document.getElementById('note-size-dec')!.addEventListener('click', () => {
+    ViewerUtil.optionNoteSizeDec();
+  });
 
   function getLoadParam(): string {
     const loadParamMatchArray = location.search.match(/load=([^&]*)(&|$)/);
@@ -38,57 +74,5 @@ window.addEventListener('DOMContentLoaded', () => {
     } else {
       throw new Error('パラメータエラー');
     }
-  }
-
-  function registEvent(): void {
-    window.addEventListener('dragover', (e) => {
-      e.preventDefault();
-    });
-    window.addEventListener('drop', (e) => {
-
-      if (!e.dataTransfer) {
-        return;
-      }
-
-      const file = e.dataTransfer.files[0];
-      const reader = new FileReader();
-
-      e.preventDefault();
-
-      if (file.size > 1024 * 1024) {
-        throw new Error('ファイルサイズが大きすぎます');
-      }
-
-      reader.addEventListener('load', () => {
-        try {
-          const result = reader.result;
-          const grpScript = GrpScriptUtil.parse(result);
-          const viewer = ViewerUtil.create(grpScript);
-          ViewerUtil.update(viewer);
-        } catch (e) {
-          outputError(e.message);
-        }
-      });
-      reader.readAsText(file);
-    });
-
-    const menuBtnElement = document.getElementById('menu-btn')!;
-    const menuBgElement = document.getElementById('menu-bg')!;
-    const menuPanelElement = document.getElementById('menu-panel')!;
-    menuBtnElement.addEventListener('click', () => {
-      if (menuBtnElement.className !== 'on') {
-        menuBtnElement.className = 'on';
-        menuBgElement.className = 'on';
-        menuPanelElement.className = 'on';
-      } else {
-        menuBtnElement.className = 'off';
-        menuBgElement.className = 'off';
-        menuPanelElement.className = 'off';
-      }
-    });
-  }
-
-  function outputError(errorMessage: string): void {
-    ViewerUtil.setMessage(errorMessage);
   }
 });

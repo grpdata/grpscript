@@ -1,3 +1,4 @@
+import { GrpScriptUtil } from '../script/grpscriptutil';
 import { GrpScript, Difficulty } from '../script/model/grpscript';
 import { Measure } from '../script/model/measure';
 import { Note, NoteType } from '../script/model/note';
@@ -5,46 +6,182 @@ import { Viewer } from './model/viewer';
 import { ViewerDom } from './model/viewerdom';
 import { Option } from './model/option';
 
+const GRP_VIEWER_STORAGE_KEY = 'grp_viewer_option';
+
 export class ViewerUtil {
 
-  public static option: Option = new Option();
-  public static uncompleteHoldNotes: Note[];
-  public static uncompleteSlideNotes: Note[];
+  private static option: Option;
+  private static uncompleteHoldNotes: Note[];
+  private static uncompleteSlideNotes: Note[];
+  private static viewer: Viewer;
+  private static isOptionChange: boolean;
 
-  public static create(grpScript: GrpScript): Viewer {
+  public static init(grpScript: GrpScript): void {
 
-    const viewer = new Viewer();
+    ViewerUtil.option = ViewerUtil.loadOption();
+    ViewerUtil.isOptionChange = false;
 
-    viewer.title = grpScript.title;
-    viewer.band = grpScript.band;
-    viewer.difficulty = Difficulty[grpScript.difficulty];
-    viewer.level = `${grpScript.level}`;
-    viewer.bpm = this.getBpmStr(grpScript);
-    viewer.combo = `${grpScript.notes.length}`;
-    viewer.time = this.getTimeStr(grpScript);
-    viewer.scorePotential = this.calcScorePotential(grpScript, this.option.comprehensivePower);
-
-    viewer.scoreElement = this.createScoreElement(grpScript);
-
-    return viewer;
+    ViewerUtil.update(grpScript);
   }
 
-  public static update(viewer: Viewer): void {
-    ViewerDom.pageTitle = `${viewer.title} 【${viewer.difficulty
-      }】`;
-    ViewerDom.title = viewer.title;
-    ViewerDom.difficulty = viewer.difficulty;
-    ViewerDom.level = viewer.level;
-    ViewerDom.band = viewer.band;
-    ViewerDom.bpm = viewer.bpm;
-    ViewerDom.combo = viewer.combo;
-    ViewerDom.time = viewer.time;
-    ViewerDom.scorePotential = viewer.scorePotential;
-    ViewerDom.scoreElement = viewer.scoreElement;
+  private static update(grpScript?: GrpScript): void {
+
+    if (grpScript) {
+
+      ViewerUtil.viewer = new Viewer();
+
+      ViewerUtil.viewer.title = grpScript.title;
+      ViewerUtil.viewer.band = grpScript.band;
+      ViewerUtil.viewer.difficulty = Difficulty[grpScript.difficulty];
+      ViewerUtil.viewer.level = `${grpScript.level}`;
+      ViewerUtil.viewer.bpm = ViewerUtil.getBpmStr(grpScript);
+      ViewerUtil.viewer.combo = `${grpScript.notes.length}`;
+      ViewerUtil.viewer.time = ViewerUtil.getTimeStr(grpScript);
+      ViewerUtil.viewer.scorePotential = ViewerUtil.calcScorePotential(grpScript, ViewerUtil.option.comprehensivePower);
+      ViewerUtil.viewer.grpScript = grpScript;
+
+      ViewerDom.pageTitle = `${ViewerUtil.viewer.title} 【${ViewerUtil.viewer.difficulty}】`;
+      ViewerDom.title = ViewerUtil.viewer.title;
+      ViewerDom.difficulty = ViewerUtil.viewer.difficulty;
+      ViewerDom.level = ViewerUtil.viewer.level;
+      ViewerDom.band = ViewerUtil.viewer.band;
+      ViewerDom.bpm = ViewerUtil.viewer.bpm;
+      ViewerDom.combo = ViewerUtil.viewer.combo;
+      ViewerDom.time = ViewerUtil.viewer.time;
+      ViewerDom.scorePotential = ViewerUtil.viewer.scorePotential;
+    }
+
+    ViewerDom.scoreElement = ViewerUtil.createScoreElement(ViewerUtil.viewer.grpScript!);
   }
 
   public static setMessage(message: string): void {
     ViewerDom.message = message;
+  }
+
+  public static load(file: File): void {
+
+    const reader = new FileReader();
+
+    if (!file.size) {
+      return;
+    }
+
+    if (file.size > 1024 * 1024) {
+      throw new Error('ファイルサイズが大きすぎます');
+    }
+
+    reader.addEventListener('load', () => {
+      try {
+        const result = reader.result;
+        const grpScript = GrpScriptUtil.parse(result);
+        ViewerUtil.update(grpScript);
+      } catch (e) {
+        ViewerUtil.outputError(e.message);
+      }
+    });
+    reader.readAsText(file);
+  }
+
+  public static menuSwitch(): void {
+    const menuBtnElement = document.getElementById('menu-btn')!;
+    const menuBgElement = document.getElementById('menu-bg')!;
+    const menuPanelElement = document.getElementById('menu-panel')!;
+    if (menuBtnElement.className !== 'on') {
+      menuBtnElement.className = 'on';
+      menuBgElement.className = 'on';
+      menuPanelElement.className = 'on';
+      ViewerUtil.isOptionChange = false;
+    } else {
+      menuBtnElement.className = 'off';
+      menuBgElement.className = 'off';
+      menuPanelElement.className = 'off';
+      if (ViewerUtil.isOptionChange) {
+        ViewerUtil.update();
+        ViewerUtil.writeOption();
+      }
+    }
+  }
+
+  public static optionColBeatInc(): void {
+    if (ViewerUtil.option.colBeat < 1000) {
+      ViewerUtil.option.colBeat += 4;
+      ViewerUtil.isOptionChange = true;
+    }
+  }
+
+  public static optionColBeatDec(): void {
+    if (ViewerUtil.option.colBeat > 4) {
+      ViewerUtil.option.colBeat -= 4;
+      ViewerUtil.isOptionChange = true;
+    }
+  }
+
+  public static optionBeatHeightInc(): void {
+    if (ViewerUtil.option.beatHeight < 1000) {
+      ViewerUtil.option.beatHeight += 4;
+      ViewerUtil.isOptionChange = true;
+    }
+  }
+
+  public static optionBeatHeightDec(): void {
+    if (ViewerUtil.option.beatHeight > 4) {
+      ViewerUtil.option.beatHeight -= 4;
+      ViewerUtil.isOptionChange = true;
+    }
+  }
+
+  public static optionLaneWidthInc(): void {
+    if (ViewerUtil.option.laneWidth < 100) {
+      ViewerUtil.option.laneWidth += 2;
+      ViewerUtil.isOptionChange = true;
+    }
+  }
+
+  public static optionLaneWidthDec(): void {
+    if (ViewerUtil.option.laneWidth > 2) {
+      ViewerUtil.option.laneWidth -= 2;
+      ViewerUtil.isOptionChange = true;
+    }
+  }
+
+  public static optionNoteSizeInc(): void {
+    if (ViewerUtil.option.noteSize < 100) {
+      ViewerUtil.option.noteSize += 2;
+      ViewerUtil.isOptionChange = true;
+    }
+  }
+
+  public static optionNoteSizeDec(): void {
+    if (ViewerUtil.option.noteSize > 2) {
+      ViewerUtil.option.noteSize -= 2;
+      ViewerUtil.isOptionChange = true;
+    }
+  }
+
+  public static outputError(errorMessage: string): void {
+    ViewerUtil.setMessage(errorMessage);
+  }
+
+  private static loadOption(): Option {
+
+    const optionStr = localStorage.getItem(GRP_VIEWER_STORAGE_KEY);
+    let option: Option | null = null;
+
+    if (optionStr) {
+      const optionObj = JSON.parse(optionStr);
+      option = new Option(optionObj._colBeat, optionObj._beatHeight, optionObj._laneWidth, optionObj._noteSize);
+    } else {
+      option = new Option();
+    }
+
+    return option;
+  }
+
+  private static writeOption(): void {
+
+    const optionStr = JSON.stringify(ViewerUtil.option);
+
+    localStorage.setItem(GRP_VIEWER_STORAGE_KEY, optionStr);
   }
 
   private static getBpmStr(grpScript: GrpScript): string {
@@ -79,7 +216,7 @@ export class ViewerUtil {
 
     for (let i = 0, iLen = grpScript.notes.length; i < iLen; i++) {
       const note = grpScript.notes[i];
-      const comboCoefficient = this.getComboCoefficient(i);
+      const comboCoefficient = ViewerUtil.getComboCoefficient(i);
       const skillCoefficient = note.skillRange ? 2.0 : 1.0;
       const feverCoefficient = note.feverRange ? 2.0 : 1.0;
       score += Math.floor(addFixScoreValue * comboCoefficient) * skillCoefficient * feverCoefficient;
@@ -115,8 +252,8 @@ export class ViewerUtil {
 
   private static createScoreElement(grpScript: GrpScript): HTMLElement {
 
-    this.uncompleteHoldNotes = [];
-    this.uncompleteSlideNotes = [];
+    ViewerUtil.uncompleteHoldNotes = [];
+    ViewerUtil.uncompleteSlideNotes = [];
 
     const colTalbe = document.createElement('table');
     const colTr = document.createElement('tr');
@@ -149,35 +286,35 @@ export class ViewerUtil {
           measureBeat = measureNumer / measureDenom * 4;
         }
 
-        const measureElement = this.createMeasureElement(measureCount, measureBeat);
+        const measureElement = ViewerUtil.createMeasureElement(measureCount, measureBeat);
 
         if (measureIndex < measureIndexLen) {
 
           const noteAreaDiv = measureElement.getElementsByClassName('note-area')[0];
-          for (let i = 0; i < this.uncompleteHoldNotes.length; i++) {
-            const note = this.uncompleteHoldNotes[i];
+          for (let i = 0; i < ViewerUtil.uncompleteHoldNotes.length; i++) {
+            const note = ViewerUtil.uncompleteHoldNotes[i];
             const endNote = grpScript.notes[note.next];
-            const holdLineDiv = this.createHoldLine(grpScript, measure, note, false, firstRowMeasureFlag);
+            const holdLineDiv = ViewerUtil.createHoldLine(grpScript, measure, note, false, firstRowMeasureFlag);
             noteAreaDiv.appendChild(holdLineDiv);
 
             if (measure.value === endNote.measureCount) {
-              this.uncompleteHoldNotes.splice(i, 1);
+              ViewerUtil.uncompleteHoldNotes.splice(i, 1);
               i--;
             }
           }
-          for (let i = 0; i < this.uncompleteSlideNotes.length; i++) {
-            const note = this.uncompleteSlideNotes[i];
+          for (let i = 0; i < ViewerUtil.uncompleteSlideNotes.length; i++) {
+            const note = ViewerUtil.uncompleteSlideNotes[i];
             const endNote = grpScript.notes[note.next];
-            const slideLineAreaDiv = this.createSlideLine(grpScript, measure, note, false, firstRowMeasureFlag);
+            const slideLineAreaDiv = ViewerUtil.createSlideLine(grpScript, measure, note, false, firstRowMeasureFlag);
             noteAreaDiv.appendChild(slideLineAreaDiv);
 
             if (measure.value === endNote.measureCount) {
-              this.uncompleteSlideNotes.splice(i, 1);
+              ViewerUtil.uncompleteSlideNotes.splice(i, 1);
               i--;
             }
           }
-          this.addNote(measureElement, grpScript, measure);
-          this.addBackgroundArea(measureElement, grpScript, measure);
+          ViewerUtil.addNote(measureElement, grpScript, measure);
+          ViewerUtil.addBackgroundArea(measureElement, grpScript, measure);
         }
 
         measureTable.insertBefore(measureElement, measureTable.firstChild);
@@ -186,7 +323,7 @@ export class ViewerUtil {
         firstRowMeasureFlag = false;
         colDrawBeat += measureBeat;
 
-      } while (colDrawBeat < this.option.measureBeat);
+      } while (colDrawBeat < ViewerUtil.option.colBeat);
     }
 
     return colTalbe;
@@ -208,27 +345,27 @@ export class ViewerUtil {
     const noteAreaDiv = document.createElement('div');
     const backgroundAreaDiv = document.createElement('div');
     noteAreaDiv.className = 'note-area';
-    noteAreaDiv.style.width = `${this.option.laneWidth * 7 - 1}px`;
-    noteAreaDiv.style.height = `${measureBeat * this.option.beatHeight - 1}px`;
+    noteAreaDiv.style.width = `${ViewerUtil.option.laneWidth * 7 - 1}px`;
+    noteAreaDiv.style.height = `${measureBeat * ViewerUtil.option.beatHeight - 1}px`;
     backgroundAreaDiv.className = 'background-area';
-    backgroundAreaDiv.style.width = `${this.option.laneWidth * 7 - 1}px`;
-    backgroundAreaDiv.style.height = `${measureBeat * this.option.beatHeight - 1}px`;
+    backgroundAreaDiv.style.width = `${ViewerUtil.option.laneWidth * 7 - 1}px`;
+    backgroundAreaDiv.style.height = `${measureBeat * ViewerUtil.option.beatHeight - 1}px`;
     for (let i = 0; i < measureBeat; i++) {
       const beatSubLineDiv = document.createElement('div');
       beatSubLineDiv.className = 'beat-sub-line';
-      beatSubLineDiv.style.bottom = `${(i + 0.5) * this.option.beatHeight - 1}px`;
+      beatSubLineDiv.style.bottom = `${(i + 0.5) * ViewerUtil.option.beatHeight - 1}px`;
       backgroundAreaDiv.appendChild(beatSubLineDiv);
     }
     for (let i = 1; i < measureBeat; i++) {
       const beatLineDiv = document.createElement('div');
       beatLineDiv.className = 'beat-line';
-      beatLineDiv.style.bottom = `${i * this.option.beatHeight - 1}px`;
+      beatLineDiv.style.bottom = `${i * ViewerUtil.option.beatHeight - 1}px`;
       backgroundAreaDiv.appendChild(beatLineDiv);
     }
     for (let i = 1; i < 7; i++) {
       const laneSplitLineDiv = document.createElement('div');
       laneSplitLineDiv.className = 'lane-split-line';
-      laneSplitLineDiv.style.left = `${i * this.option.laneWidth - 1}px`;
+      laneSplitLineDiv.style.left = `${i * ViewerUtil.option.laneWidth - 1}px`;
       backgroundAreaDiv.appendChild(laneSplitLineDiv);
     }
     measureTd.appendChild(backgroundAreaDiv);
@@ -268,39 +405,39 @@ export class ViewerUtil {
 
       if (note.type === NoteType.SLIDE_A) {
         if (note.slideStart) {
-          noteDiv.style.height = `${this.option.noteSize}px`;
-          noteDiv.style.bottom = `${this.option.beatHeight * note.beat - this.option.noteSize / 2}px`;
+          noteDiv.style.height = `${ViewerUtil.option.noteSize}px`;
+          noteDiv.style.bottom = `${ViewerUtil.option.beatHeight * note.beat - ViewerUtil.option.noteSize / 2}px`;
           noteDiv.className = 'note hold';
         } else {
-          noteDiv.style.bottom = `${this.option.beatHeight * note.beat - 2}px`;
+          noteDiv.style.bottom = `${ViewerUtil.option.beatHeight * note.beat - 2}px`;
           noteDiv.className = 'note slide';
         }
       } else if (note.type === NoteType.SLIDE_B) {
         if (note.slideStart) {
-          noteDiv.style.height = `${this.option.noteSize}px`;
-          noteDiv.style.bottom = `${this.option.beatHeight * note.beat - this.option.noteSize / 2}px`;
+          noteDiv.style.height = `${ViewerUtil.option.noteSize}px`;
+          noteDiv.style.bottom = `${ViewerUtil.option.beatHeight * note.beat - ViewerUtil.option.noteSize / 2}px`;
           noteDiv.className = 'note hold';
         } else {
-          noteDiv.style.bottom = `${this.option.beatHeight * note.beat - 1.5}px`;
+          noteDiv.style.bottom = `${ViewerUtil.option.beatHeight * note.beat - 1.5}px`;
           noteDiv.className = 'note slide';
         }
       } else {
-        noteDiv.style.height = `${this.option.noteSize}px`;
-        noteDiv.style.bottom = `${this.option.beatHeight * note.beat - this.option.noteSize / 2 - 0.5}px`;
+        noteDiv.style.height = `${ViewerUtil.option.noteSize}px`;
+        noteDiv.style.bottom = `${ViewerUtil.option.beatHeight * note.beat - ViewerUtil.option.noteSize / 2 - 0.5}px`;
       }
 
-      noteDiv.style.width = `${this.option.noteSize}px`;
-      const leftDiff = ((this.option.laneWidth - 1) / 2) - (this.option.noteSize / 2);
-      noteDiv.style.left = `${this.option.laneWidth * (note.lane - 1) + leftDiff}px`;
+      noteDiv.style.width = `${ViewerUtil.option.noteSize}px`;
+      const leftDiff = ((ViewerUtil.option.laneWidth - 1) / 2) - (ViewerUtil.option.noteSize / 2);
+      noteDiv.style.left = `${ViewerUtil.option.laneWidth * (note.lane - 1) + leftDiff}px`;
       noteDiv.style.zIndex = `${1000 + (iLen - i)}`;
       noteAreaDiv.appendChild(noteDiv);
 
       if ((note.type === NoteType.HOLD || note.type === NoteType.SKILL_HOLD) && note.next >= 0) {
-        const holdLineDiv = this.createHoldLine(grpScript, measure, note, true, false);
+        const holdLineDiv = ViewerUtil.createHoldLine(grpScript, measure, note, true, false);
         noteAreaDiv.appendChild(holdLineDiv);
       } else if (note.type === NoteType.SLIDE_A ||
         note.type === NoteType.SLIDE_B) {
-        const slideLineAreaDiv = this.createSlideLine(grpScript, measure, note, true, false);
+        const slideLineAreaDiv = ViewerUtil.createSlideLine(grpScript, measure, note, true, false);
         noteAreaDiv.appendChild(slideLineAreaDiv);
       }
 
@@ -339,19 +476,19 @@ export class ViewerUtil {
       if (fever.measureCount === measure.value) {
         const feverBackgroundDiv = document.createElement('div');
         feverBackgroundDiv.className = targetFeverClass[i];
-        feverBackgroundDiv.style.height = `${(measureBeat - fever.beat) * this.option.beatHeight}px`;
-        feverBackgroundDiv.style.bottom = `${fever.beat * this.option.beatHeight - 1}px`;
+        feverBackgroundDiv.style.height = `${(measureBeat - fever.beat) * ViewerUtil.option.beatHeight}px`;
+        feverBackgroundDiv.style.bottom = `${fever.beat * ViewerUtil.option.beatHeight - 1}px`;
         backgroundAreaDiv.appendChild(feverBackgroundDiv);
       } else if (endFever.measureCount === measure.value) {
         const feverBackgroundDiv = document.createElement('div');
         feverBackgroundDiv.className = targetFeverClass[i];
-        feverBackgroundDiv.style.height = `${endFever.beat * this.option.beatHeight}px`;
+        feverBackgroundDiv.style.height = `${endFever.beat * ViewerUtil.option.beatHeight}px`;
         feverBackgroundDiv.style.bottom = `${-1}px`;
         backgroundAreaDiv.appendChild(feverBackgroundDiv);
       } else {
         const feverBackgroundDiv = document.createElement('div');
         feverBackgroundDiv.className = targetFeverClass[i];
-        feverBackgroundDiv.style.height = `${measureBeat * this.option.beatHeight}px`;
+        feverBackgroundDiv.style.height = `${measureBeat * ViewerUtil.option.beatHeight}px`;
         feverBackgroundDiv.style.bottom = `${-1}px`;
         backgroundAreaDiv.appendChild(feverBackgroundDiv);
       }
@@ -377,22 +514,22 @@ export class ViewerUtil {
     let lineBottom: number;
 
     if (note.measureCount === endNote.measureCount) {
-      lineHeight = (endNote.beat - note.beat) * this.option.beatHeight;
-      lineBottom = note.beat * this.option.beatHeight;
+      lineHeight = (endNote.beat - note.beat) * ViewerUtil.option.beatHeight;
+      lineBottom = note.beat * ViewerUtil.option.beatHeight;
     } else if (measure.value === note.measureCount) {
-      lineHeight = (measureBeat - note.beat) * this.option.beatHeight;
-      lineBottom = note.beat * this.option.beatHeight;
+      lineHeight = (measureBeat - note.beat) * ViewerUtil.option.beatHeight;
+      lineBottom = note.beat * ViewerUtil.option.beatHeight;
       if (addFlag) {
-        this.uncompleteHoldNotes.push(note);
+        ViewerUtil.uncompleteHoldNotes.push(note);
       }
     } else if (measure.value === endNote.measureCount) {
-      lineHeight = endNote.beat * this.option.beatHeight;
+      lineHeight = endNote.beat * ViewerUtil.option.beatHeight;
       lineBottom = 0;
     } else {
-      lineHeight = (measureBeat) * this.option.beatHeight;
+      lineHeight = (measureBeat) * ViewerUtil.option.beatHeight;
       lineBottom = 0;
       if (addFlag) {
-        this.uncompleteHoldNotes.push(note);
+        ViewerUtil.uncompleteHoldNotes.push(note);
       }
     }
 
@@ -403,10 +540,10 @@ export class ViewerUtil {
 
     holdLineDiv.style.height = `${lineHeight}px`;
     holdLineDiv.style.bottom = `${lineBottom - 1}px`;
-    holdLineDiv.style.width = `${this.option.noteSize}px`;
+    holdLineDiv.style.width = `${ViewerUtil.option.noteSize}px`;
 
-    const leftDiff = ((this.option.laneWidth - 1) / 2) - (this.option.noteSize / 2);
-    holdLineDiv.style.left = `${this.option.laneWidth * (note.lane - 1) + leftDiff}px`;
+    const leftDiff = ((ViewerUtil.option.laneWidth - 1) / 2) - (ViewerUtil.option.noteSize / 2);
+    holdLineDiv.style.left = `${ViewerUtil.option.laneWidth * (note.lane - 1) + leftDiff}px`;
 
     return holdLineDiv;
   }
@@ -432,14 +569,14 @@ export class ViewerUtil {
     } else {
       if (!addFlag) {
         const measureTmp = grpScript.measure[note.measureCount - 1];
-        slideLineDrawedHeight += ((measureTmp.numer / measureTmp.denom * 4) - note.beat) * this.option.beatHeight;
+        slideLineDrawedHeight += ((measureTmp.numer / measureTmp.denom * 4) - note.beat) * ViewerUtil.option.beatHeight;
       }
       for (let i = note.measureCount, iLen = grpScript.measure.length; i < iLen; i++) {
         const measureTmp = grpScript.measure[i];
         if (measureTmp.value !== endNote.measureCount) {
           slideLineBeatCount += (measureTmp.numer / measureTmp.denom) * 4;
           if (measureTmp.value < measure.value && !addFlag) {
-            slideLineDrawedHeight += (measureTmp.numer / measureTmp.denom) * 4 * this.option.beatHeight;
+            slideLineDrawedHeight += (measureTmp.numer / measureTmp.denom) * 4 * ViewerUtil.option.beatHeight;
           }
         } else {
           slideLineBeatCount += (measureBeat - note.beat) + endNote.beat;
@@ -448,30 +585,30 @@ export class ViewerUtil {
       }
     }
 
-    const slideLineAllHeight = slideLineBeatCount * this.option.beatHeight;
-    const slideLineAllWidth = (endNote.lane - note.lane) * this.option.laneWidth;
+    const slideLineAllHeight = slideLineBeatCount * ViewerUtil.option.beatHeight;
+    const slideLineAllWidth = (endNote.lane - note.lane) * ViewerUtil.option.laneWidth;
     const slideLineDeg = Math.atan2(slideLineAllWidth, slideLineAllHeight) / Math.PI * 180;
     const slideLineHeight = Math.sqrt(Math.pow(slideLineAllHeight, 2) + Math.pow(slideLineAllWidth, 2));
 
     let slideLineAreaHeight: number;
     let slideLineAreaBottom: number;
     if (note.measureCount === endNote.measureCount) {
-      slideLineAreaHeight = (endNote.beat - note.beat) * this.option.beatHeight;
-      slideLineAreaBottom = note.beat * this.option.beatHeight;
+      slideLineAreaHeight = (endNote.beat - note.beat) * ViewerUtil.option.beatHeight;
+      slideLineAreaBottom = note.beat * ViewerUtil.option.beatHeight;
     } else if (measure.value === note.measureCount) {
-      slideLineAreaHeight = (measureBeat - note.beat) * this.option.beatHeight;
-      slideLineAreaBottom = note.beat * this.option.beatHeight;
+      slideLineAreaHeight = (measureBeat - note.beat) * ViewerUtil.option.beatHeight;
+      slideLineAreaBottom = note.beat * ViewerUtil.option.beatHeight;
       if (addFlag) {
-        this.uncompleteSlideNotes.push(note);
+        ViewerUtil.uncompleteSlideNotes.push(note);
       }
     } else if (measure.value === endNote.measureCount) {
-      slideLineAreaHeight = endNote.beat * this.option.beatHeight;
+      slideLineAreaHeight = endNote.beat * ViewerUtil.option.beatHeight;
       slideLineAreaBottom = 0;
     } else {
-      slideLineAreaHeight = (measureBeat) * this.option.beatHeight;
+      slideLineAreaHeight = (measureBeat) * ViewerUtil.option.beatHeight;
       slideLineAreaBottom = 0;
       if (addFlag) {
-        this.uncompleteSlideNotes.push(note);
+        ViewerUtil.uncompleteSlideNotes.push(note);
       }
     }
 
@@ -481,16 +618,16 @@ export class ViewerUtil {
     }
 
     slideLineAreaDiv.className = 'slide-line-area';
-    slideLineAreaDiv.style.width = `${Math.abs(slideLineAllWidth) + this.option.noteSize}px`;
+    slideLineAreaDiv.style.width = `${Math.abs(slideLineAllWidth) + ViewerUtil.option.noteSize}px`;
     slideLineAreaDiv.style.height = `${slideLineAreaHeight}px`;
     slideLineAreaDiv.style.bottom = `${slideLineAreaBottom - 0.5}px`;
 
-    const leftDiff = ((this.option.laneWidth - 1) / 2) - (this.option.noteSize / 2);
-    slideLineAreaDiv.style.left = `${this.option.laneWidth * (Math.min(note.lane, endNote.lane) - 1) + leftDiff}px`;
+    const leftDiff = ((ViewerUtil.option.laneWidth - 1) / 2) - (ViewerUtil.option.noteSize / 2);
+    slideLineAreaDiv.style.left = `${ViewerUtil.option.laneWidth * (Math.min(note.lane, endNote.lane) - 1) + leftDiff}px`;
 
-    const slideLineWidth = this.option.noteSize * Math.abs(Math.sin(Math.atan2(slideLineAllHeight, slideLineAllWidth)));
+    const slideLineWidth = ViewerUtil.option.noteSize * Math.abs(Math.sin(Math.atan2(slideLineAllHeight, slideLineAllWidth)));
     slideLineDiv.style.width = `${slideLineWidth}px`;
-    slideLineDiv.style.height = `${slideLineHeight + this.option.noteSize * 2}px`;
+    slideLineDiv.style.height = `${slideLineHeight + ViewerUtil.option.noteSize * 2}px`;
     if (slideLineDeg > 0) {
 
       slideLineDiv.style.left = `${0}px`;

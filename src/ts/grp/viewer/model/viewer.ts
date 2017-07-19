@@ -1,3 +1,5 @@
+import { GrpScript } from '../../script/model/grpscript';
+
 export class Viewer {
 
   public title: string;
@@ -8,7 +10,7 @@ export class Viewer {
   public combo: string;
   public time: string;
   public scorePotential: string;
-  public scoreElement: HTMLElement | null;
+  public grpScript: GrpScript | null;
 
   constructor() {
     this.title = 'No Title';
@@ -19,6 +21,6 @@ export class Viewer {
     this.combo = '0';
     this.time = '0:00';
     this.scorePotential = '0.00';
-    this.scoreElement = null;
+    this.grpScript = null;
   }
 }

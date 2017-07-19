@@ -89,6 +89,38 @@ export class ViewerDom {
     }
   }
 
+  public static get optionColBeat(): number {
+    return parseInt((<HTMLInputElement>document.getElementById('col-beat-value')!).value);
+  }
+
+  public static set optionColBeat(colBeat: number) {
+    (<HTMLInputElement>document.getElementById('col-beat-value')!).value = `${colBeat}`;
+  }
+
+  public static get optionBeatHeight(): number {
+    return parseInt((<HTMLInputElement>document.getElementById('beat-height-value')!).value);
+  }
+
+  public static set optionBeatHeight(beatHeight: number) {
+    (<HTMLInputElement>document.getElementById('beat-height-value')!).value = `${beatHeight}`;
+  }
+
+  public static get optionLaneWidth(): number {
+    return parseInt((<HTMLInputElement>document.getElementById('lane-width-value')!).value);
+  }
+
+  public static set optionLaneWidth(laneWidth: number) {
+    (<HTMLInputElement>document.getElementById('lane-width-value')!).value = `${laneWidth}`;
+  }
+
+  public static get optionNoteSize(): number {
+    return parseInt((<HTMLInputElement>document.getElementById('note-size-value')!).value);
+  }
+
+  public static set optionNoteSize(noteSize: number) {
+    (<HTMLInputElement>document.getElementById('note-size-value')!).value = `${noteSize}`;
+  }
+
   public static get message(): string {
     return document.getElementById('message')!.innerHTML;
   }

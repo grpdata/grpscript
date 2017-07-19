@@ -10,7 +10,7 @@ export class GrpScriptUtil {
 
     const grpScript = new GrpScript();
 
-    const grpScriptArray = this.normalize(grpScriptStr);
+    const grpScriptArray = GrpScriptUtil.normalize(grpScriptStr);
 
     const SKILL_ACTIVATION_TIME = 7000;
 
@@ -31,13 +31,13 @@ export class GrpScriptUtil {
       const line = grpScriptArray[i];
 
       if (line.charAt(0) === '#') {
-        this.parseOrder(grpScript, line, measureCount, beat, time);
+        GrpScriptUtil.parseOrder(grpScript, line, measureCount, beat, time);
         if (grpScript.bpm.length > 0) {
           bpm = grpScript.bpm[grpScript.bpm.length - 1].value;
         }
       } else {
         if (beat === 0) {
-          measureLineCount = this.getMeasureLineCount(grpScriptArray, i);
+          measureLineCount = GrpScriptUtil.getMeasureLineCount(grpScriptArray, i);
         }
         if (line.charAt(0) === ',') {
           if (measureLineCount === 0) {
@@ -227,7 +227,7 @@ export class GrpScriptUtil {
       xhr.addEventListener('load', () => {
         if (xhr.status === 200) {
           try {
-            const grpScript = this.parse(xhr.responseText);
+            const grpScript = GrpScriptUtil.parse(xhr.responseText);
             callback(null, grpScript);
           } catch (e) {
             callback(e, null);
