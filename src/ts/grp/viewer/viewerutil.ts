@@ -162,6 +162,11 @@ export class ViewerUtil {
     ViewerUtil.setMessage(errorMessage);
   }
 
+  public static resetOption(): void {
+    ViewerUtil.option = new Option();
+    ViewerUtil.isOptionChange = true;
+  }
+
   private static loadOption(): Option {
 
     const optionStr = localStorage.getItem(GRP_VIEWER_STORAGE_KEY);
@@ -183,6 +188,7 @@ export class ViewerUtil {
 
     localStorage.setItem(GRP_VIEWER_STORAGE_KEY, optionStr);
   }
+
 
   private static getBpmStr(grpScript: GrpScript): string {
     if (grpScript.bpm.length === 1) {

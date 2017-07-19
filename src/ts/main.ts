@@ -33,6 +33,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('menu-btn')!.addEventListener('click', ViewerUtil.menuSwitch);
 
+  document.getElementById('option-reset-btn')!.addEventListener('click', ViewerUtil.resetOption);
+
   document.getElementById('option-close-btn')!.addEventListener('click', ViewerUtil.menuSwitch);
 
   document.getElementById('col-beat-inc')!.addEventListener('click', () => {
