@@ -91,6 +91,19 @@
     "no-unused-variable": true,
     "no-magic-numbers": [false, -1, 0, 1],
     "object-literal-key-quotes": [false],
-    "no-angle-bracket-type-assertion" : false
+    "no-angle-bracket-type-assertion": false,
+    "member-ordering": [
+      true,
+      {
+        "order": [
+          "static-field",
+          "instance-field",
+          "constructor",
+          "public-instance-method",
+          "protected-instance-method",
+          "private-instance-method"
+        ]
+      }
+    ]
   }
 }
