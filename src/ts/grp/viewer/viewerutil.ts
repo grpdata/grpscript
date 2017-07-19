@@ -189,7 +189,6 @@ export class ViewerUtil {
     localStorage.setItem(GRP_VIEWER_STORAGE_KEY, optionStr);
   }
 
-
   private static getBpmStr(grpScript: GrpScript): string {
     if (grpScript.bpm.length === 1) {
       return `${(Math.ceil(grpScript.bpm[0].value * 100) / 100)}`;
@@ -629,9 +628,11 @@ export class ViewerUtil {
     slideLineAreaDiv.style.bottom = `${slideLineAreaBottom - 0.5}px`;
 
     const leftDiff = ((ViewerUtil.option.laneWidth - 1) / 2) - (ViewerUtil.option.noteSize / 2);
-    slideLineAreaDiv.style.left = `${ViewerUtil.option.laneWidth * (Math.min(note.lane, endNote.lane) - 1) + leftDiff}px`;
+    const slideLineAreaLeft = ViewerUtil.option.laneWidth * (Math.min(note.lane, endNote.lane) - 1) + leftDiff;
+    slideLineAreaDiv.style.left = `${slideLineAreaLeft}px`;
 
-    const slideLineWidth = ViewerUtil.option.noteSize * Math.abs(Math.sin(Math.atan2(slideLineAllHeight, slideLineAllWidth)));
+    const slideLineRatio = Math.abs(Math.sin(Math.atan2(slideLineAllHeight, slideLineAllWidth)));
+    const slideLineWidth = ViewerUtil.option.noteSize * slideLineRatio;
     slideLineDiv.style.width = `${slideLineWidth}px`;
     slideLineDiv.style.height = `${slideLineHeight + ViewerUtil.option.noteSize * 2}px`;
     if (slideLineDeg > 0) {
