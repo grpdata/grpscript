@@ -6,8 +6,9 @@ export class Note {
     public lane: Lane,
     public type: NoteType,
     public next: number,
+    public timeFromSkill: number,
+    public skillIndex: number,
     public slideStart: boolean,
-    public skillRange: boolean,
     public feverRange: boolean
   ) {
   }

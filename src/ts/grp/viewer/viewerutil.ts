@@ -222,8 +222,15 @@ export class ViewerUtil {
     for (let i = 0, iLen = grpScript.notes.length; i < iLen; i++) {
       const note = grpScript.notes[i];
       const comboCoefficient = ViewerUtil.getComboCoefficient(i);
-      const skillCoefficient = note.skillRange ? 2.0 : 1.0;
-      const feverCoefficient = note.feverRange ? 2.0 : 1.0;
+      let skillCoefficient = 1.0;
+      if (
+        note.skillIndex !== -1 &&
+        this.option.skills[note.skillIndex].isScore &&
+        note.timeFromSkill < this.option.skills[note.skillIndex].time
+      ) {
+        skillCoefficient = this.option.skills[note.skillIndex].rate;
+      }
+      const feverCoefficient = (ViewerUtil.option.isFeverActive && note.feverRange) ? 2.0 : 1.0;
       score += Math.floor(addFixScoreValue * comboCoefficient) * skillCoefficient * feverCoefficient;
     }
 
@@ -467,7 +474,7 @@ export class ViewerUtil {
       const fever = targetFever[i];
       const endFever = targetFever[i + 1];
 
-      if (fever === null || endFever === null) {
+      if (fever === null || endFever === null || !ViewerUtil.option.isFeverActive) {
         continue;
       }
 

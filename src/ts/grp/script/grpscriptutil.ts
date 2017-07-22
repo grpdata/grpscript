@@ -12,8 +12,6 @@ export class GrpScriptUtil {
 
     const grpScriptArray = GrpScriptUtil.normalize(grpScriptStr);
 
-    const SKILL_ACTIVATION_TIME = 7000;
-
     let beat = 0;
     let measureLineCount = 0;
     const measureNumer = 4;
@@ -91,7 +89,7 @@ export class GrpScriptUtil {
               skillTime.push(time);
             }
 
-            const note = new Note(measureCount, beat, time, lane, noteType, 0, slideStart, false, false);
+            const note = new Note(measureCount, beat, time, lane, noteType, 0, -1, -1, slideStart, false);
             grpScript.notes.push(note);
 
             if ((noteType === NoteType.SLIDE_A_END)) {
@@ -204,19 +202,30 @@ export class GrpScriptUtil {
         .forEach((note) => note.feverRange = true);
     }
 
-    grpScript.notes
-      .filter((note) => {
-        for (const sTime of skillTime) {
-          if (note.time >= sTime && note.time < sTime + SKILL_ACTIVATION_TIME) {
-            return true;
+    if (skillTime) {
+      grpScript.notes.forEach((note) => {
+        if (note.time < skillTime[0]) {
+          return;
+        }
+        if (note.time >= skillTime[skillTime.length - 1]) {
+          note.timeFromSkill = note.time - skillTime[skillTime.length - 1];
+          note.skillIndex = skillTime.length - 1;
+        }
+        for (let i = 0, iLen = skillTime.length; i < iLen; i++) {
+          if (note.time >= skillTime[i] && note.time < skillTime[i + 1]) {
+            note.timeFromSkill = note.time - skillTime[i];
+            note.skillIndex = i;
           }
         }
-        return false;
-      })
-      .forEach((note) => note.skillRange = true);
+      });
+    }
 
     grpScript.time = grpScript.notes[grpScript.notes.length - 1].time;
 
+    let count = 0;
+    grpScript.notes.forEach((i) => {
+      count ++;
+    });
     return grpScript;
   }
 
