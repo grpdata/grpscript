@@ -231,7 +231,9 @@ export class ViewerUtil {
         skillCoefficient = this.option.skills[note.skillIndex].rate;
       }
       const feverCoefficient = (ViewerUtil.option.isFeverActive && note.feverRange) ? 2.0 : 1.0;
-      score += Math.floor(addFixScoreValue * comboCoefficient) * skillCoefficient * feverCoefficient;
+      const addScoreNormal = Math.floor(addFixScoreValue * comboCoefficient);
+      const addScore = Math.floor(addScoreNormal * skillCoefficient) * feverCoefficient;
+      score += addScore;
     }
 
     return `${(score / 10000).toFixed(4)}`;

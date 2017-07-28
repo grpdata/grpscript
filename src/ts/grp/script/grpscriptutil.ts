@@ -122,9 +122,24 @@ export class GrpScriptUtil {
       }
     }
 
-    // ノートを時間順にソート
+    // ノートをソート
     grpScript.notes.sort((noteA, noteB) => {
-      return noteA.time - noteB.time;
+      // 時間の昇順
+      if (noteA.time !== noteB.time) {
+        return noteA.time - noteB.time;
+      } else {
+        // スキルアイコンを優先
+        if ((noteA.type === NoteType.SKILL || noteA.type === NoteType.SKILL_HOLD) &&
+          (noteB.type !== NoteType.SKILL && noteB.type !== NoteType.SKILL_HOLD)) {
+          return -1;
+        }
+        else if ((noteB.type === NoteType.SKILL || noteB.type === NoteType.SKILL_HOLD) &&
+          (noteA.type !== NoteType.SKILL && noteA.type !== NoteType.SKILL_HOLD)) {
+          return 1;
+        } else {
+          return 0;
+        }
+      }
     });
 
     for (let i = 0, iLen = grpScript.notes.length; i < iLen; i++) {
@@ -207,12 +222,20 @@ export class GrpScriptUtil {
         if (note.time < skillTime[0]) {
           return;
         }
-        if (note.time >= skillTime[skillTime.length - 1]) {
+        if (note.time >= skillTime[skillTime.length - 1]
+          && note.type !== NoteType.SKILL && note.type !== NoteType.SKILL_HOLD) {
           note.timeFromSkill = note.time - skillTime[skillTime.length - 1];
           note.skillIndex = skillTime.length - 1;
         }
         for (let i = 0, iLen = skillTime.length; i < iLen; i++) {
-          if (note.time >= skillTime[i] && note.time < skillTime[i + 1]) {
+          // スキルアイコンは自身のスキル効果の影響を受けない
+          if (note.time === skillTime[i] &&
+            (note.type === NoteType.SKILL || note.type === NoteType.SKILL_HOLD)) {
+            if (i !== 0) {
+              note.timeFromSkill = note.time - skillTime[i - 1];
+              note.skillIndex = i - 1;
+            }
+          } else if (note.time >= skillTime[i] && note.time < skillTime[i + 1]) {
             note.timeFromSkill = note.time - skillTime[i];
             note.skillIndex = i;
           }
@@ -224,7 +247,7 @@ export class GrpScriptUtil {
 
     let count = 0;
     grpScript.notes.forEach((i) => {
-      count ++;
+      count++;
     });
     return grpScript;
   }
