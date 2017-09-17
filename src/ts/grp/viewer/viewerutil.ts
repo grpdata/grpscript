@@ -196,8 +196,8 @@ export class ViewerUtil {
       const bpmValueArray = grpScript.bpm.map((bpm) => {
         return bpm.value;
       });
-      const minBpmValue = Math.min.call(null, bpmValueArray);
-      const maxBpmValue = Math.max.call(null, bpmValueArray);
+      const minBpmValue = Math.min.apply(null, bpmValueArray);
+      const maxBpmValue = Math.max.apply(null, bpmValueArray);
       if (maxBpmValue === minBpmValue) {
         return `${maxBpmValue}`;
       } else {
