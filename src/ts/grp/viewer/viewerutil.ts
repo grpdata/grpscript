@@ -236,7 +236,7 @@ export class ViewerUtil {
       score += addScore;
     }
 
-    return `${(score / 10000).toFixed(4)}`;
+    return `${score.toLocaleString()}`;
   }
 
   private static getComboCoefficient(combo: number): number {
