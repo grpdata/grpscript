@@ -414,6 +414,8 @@ export class ViewerUtil {
         case NoteType.SKILL_HOLD: noteDiv.className = 'note skill'; break;
         case NoteType.SLIDE_A_END: noteDiv.className = 'note hold'; break;
         case NoteType.SLIDE_B_END: noteDiv.className = 'note hold'; break;
+        case NoteType.SLIDE_A_FLICK_END: noteDiv.className = 'note flick'; break;
+        case NoteType.SLIDE_B_FLICK_END: noteDiv.className = 'note flick'; break;
         default: break;
       }
 

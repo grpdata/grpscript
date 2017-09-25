@@ -32,6 +32,8 @@ export enum NoteType {
   SKILL_HOLD = 5,
   SLIDE_A = 6,
   SLIDE_A_END = 7,
+  SLIDE_A_FLICK_END = 10,
   SLIDE_B = 8,
-  SLIDE_B_END = 9
+  SLIDE_B_END = 9,
+  SLIDE_B_FLICK_END = 11
 }

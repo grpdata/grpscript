@@ -49,7 +49,7 @@ export class GrpScriptUtil {
           continue;
         }
         for (let lane = Lane.LANE_1; lane <= Lane.LANE_7; lane++) {
-          const noteType = parseInt(line.charAt(lane - Lane.LANE_1));
+          const noteType = parseInt(line.charAt(lane - Lane.LANE_1), 16);
 
           if (!isNaN(noteType)) {
 
@@ -63,7 +63,7 @@ export class GrpScriptUtil {
                 // 同拍にスライドA終了がある場合はスライド開始フラグON
                 for (let laneTmp = lane + 1; laneTmp <= Lane.LANE_7; laneTmp++) {
                   const noteTypeTmp = parseInt(line.charAt(laneTmp - Lane.LANE_1));
-                  if (noteTypeTmp === NoteType.SLIDE_A_END) {
+                  if (noteTypeTmp === NoteType.SLIDE_A_END || noteTypeTmp === NoteType.SLIDE_A_FLICK_END) {
                     slideStart = true;
                     break;
                   }
@@ -77,7 +77,7 @@ export class GrpScriptUtil {
                 // 同拍にスライドB終了がある場合はスライド開始フラグON
                 for (let laneTmp = lane + 1; laneTmp <= Lane.LANE_7; laneTmp++) {
                   const noteTypeTmp = parseInt(line.charAt(laneTmp - Lane.LANE_1));
-                  if (noteTypeTmp === NoteType.SLIDE_B_END) {
+                  if (noteTypeTmp === NoteType.SLIDE_B_END || noteTypeTmp === NoteType.SLIDE_B_FLICK_END) {
                     slideStart = true;
                     break;
                   }
@@ -92,7 +92,7 @@ export class GrpScriptUtil {
             const note = new Note(measureCount, beat, time, lane, noteType, 0, -1, -1, slideStart, false);
             grpScript.notes.push(note);
 
-            if ((noteType === NoteType.SLIDE_A_END)) {
+            if (noteType === NoteType.SLIDE_A_END || noteType === NoteType.SLIDE_A_FLICK_END) {
               slideAFlag = false;
 
               // 同拍にスライドA開始がある場合はスライドAフラグON
@@ -103,7 +103,7 @@ export class GrpScriptUtil {
                   break;
                 }
               }
-            } else if (noteType === NoteType.SLIDE_B_END) {
+            } else if (noteType === NoteType.SLIDE_B_END || noteType === NoteType.SLIDE_B_FLICK_END) {
               slideBFlag = false;
 
               // 同拍にスライドB開始がある場合はスライドBフラグON
@@ -162,7 +162,7 @@ export class GrpScriptUtil {
       if (note.type === NoteType.SLIDE_A) {
         for (let j = i + 1; j < iLen; j++) {
           const noteTmp = grpScript.notes[j];
-          if (noteTmp.type === NoteType.SLIDE_A_END) {
+          if (noteTmp.type === NoteType.SLIDE_A_END || noteTmp.type === NoteType.SLIDE_A_FLICK_END) {
             note.next = j;
             break;
           }
@@ -173,7 +173,7 @@ export class GrpScriptUtil {
               if (noteTmp.time < noteTmp2.time) {
                 break;
               }
-              if (noteTmp2.type === NoteType.SLIDE_A_END) {
+              if (noteTmp2.type === NoteType.SLIDE_A_END || noteTmp2.type === NoteType.SLIDE_A_FLICK_END) {
                 note.next = k;
                 break;
               }
@@ -187,7 +187,7 @@ export class GrpScriptUtil {
       if (note.type === NoteType.SLIDE_B) {
         for (let j = i + 1; j < iLen; j++) {
           const noteTmp = grpScript.notes[j];
-          if (noteTmp.type === NoteType.SLIDE_B_END) {
+          if (noteTmp.type === NoteType.SLIDE_B_END || noteTmp.type === NoteType.SLIDE_B_FLICK_END) {
             note.next = j;
             break;
           }
@@ -198,7 +198,7 @@ export class GrpScriptUtil {
               if (noteTmp.time < noteTmp2.time) {
                 break;
               }
-              if (noteTmp2.type === NoteType.SLIDE_B_END) {
+              if (noteTmp2.type === NoteType.SLIDE_B_END || noteTmp2.type === NoteType.SLIDE_B_FLICK_END) {
                 note.next = k;
                 break;
               }
