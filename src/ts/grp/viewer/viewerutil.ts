@@ -83,15 +83,18 @@ export class ViewerUtil {
   }
 
   public static menuSwitch(): void {
+    const menuElement = document.getElementById('menu')!;
     const menuBtnElement = document.getElementById('menu-btn')!;
     const menuBgElement = document.getElementById('menu-bg')!;
     const menuPanelElement = document.getElementById('menu-panel')!;
     if (menuBtnElement.className !== 'on') {
+      menuElement.className = 'on';
       menuBtnElement.className = 'on';
       menuBgElement.className = 'on';
       menuPanelElement.className = 'on';
       ViewerUtil.isOptionChange = false;
     } else {
+      menuElement.className = 'off';
       menuBtnElement.className = 'off';
       menuBgElement.className = 'off';
       menuPanelElement.className = 'off';

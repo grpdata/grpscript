@@ -124,6 +124,7 @@ header {
   padding: 5px;
   border-bottom: 5px solid #fff;
   position: relative;
+  z-index: 9996;
   h1 {
     font-size: 20px;
     padding: 10px;
@@ -149,51 +150,6 @@ header {
       margin: 0 10px;
     }
   }
-  #menu-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 44px;
-    height: 44px;
-    border-radius: 5px;
-    background: #fff;
-    cursor: pointer;
-    z-index: 9999;
-    div {
-      position: absolute;
-      left: 7px;
-      width: 30px;
-      height: 4px;
-      border-radius: 2px;
-      background: #ff4848;
-      transition: all 0.2s;
-    }
-    div:nth-child(1) {
-      top: 10px;
-    }
-    div:nth-child(2) {
-      top: 20px;
-    }
-    div:nth-child(3) {
-      top: 30px;
-    }
-  }
-  #menu-btn.on {
-    div:nth-child(1) {
-      left: 1px;
-      transform: rotate(-45deg);
-      transform-origin: 100% 0;
-    }
-    div:nth-child(2) {
-      transform: rotate(45deg);
-      transform-origin: 50% 50%;
-    }
-    div:nth-child(3) {
-      left: 13px;
-      transform: rotate(-45deg);
-      transform-origin: 0 100%;
-    }
-  }
 }
 
 #menu-bg.on {
@@ -208,8 +164,58 @@ header {
   height: 100%;
   display: none;
   background: #000;
-  z-index: 9998;
+  z-index: 9997;
   opacity: 0.8;
+}
+
+#menu.on {
+  z-index: 9998;
+}
+
+#menu-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 44px;
+  height: 44px;
+  border-radius: 5px;
+  background: #fff;
+  cursor: pointer;
+  z-index: 9999;
+  div {
+    position: absolute;
+    left: 7px;
+    width: 30px;
+    height: 4px;
+    border-radius: 2px;
+    background: #ff4848;
+    transition: all 0.2s;
+  }
+  div:nth-child(1) {
+    top: 10px;
+  }
+  div:nth-child(2) {
+    top: 20px;
+  }
+  div:nth-child(3) {
+    top: 30px;
+  }
+}
+#menu-btn.on {
+  div:nth-child(1) {
+    left: 1px;
+    transform: rotate(-45deg);
+    transform-origin: 100% 0;
+  }
+  div:nth-child(2) {
+    transform: rotate(45deg);
+    transform-origin: 50% 50%;
+  }
+  div:nth-child(3) {
+    left: 13px;
+    transform: rotate(-45deg);
+    transform-origin: 0 100%;
+  }
 }
 
 #menu {
@@ -222,7 +228,7 @@ header {
   -ms-user-select: none;
   -moz-user-select: none;
   user-select: none;
-  z-index: 9998;
+  z-index: 9995;
   #menu-panel.on {
     transform: translateX(0);
   }
@@ -235,7 +241,7 @@ header {
     border-radius: 8px;
     transform: translateX(1000px);
     transition: transform 0.1s;
-    z-index: 9999;
+    z-index: 9998;
     background: #fff;
     color: #555;
     @media(max-width: 940px) {
